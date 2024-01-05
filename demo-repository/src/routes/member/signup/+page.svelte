@@ -1,7 +1,5 @@
 <script>
 
-    import {checkLogin} from "../login_check.js";
-
     $: signupData = {
         username: '',
         nickname: '',
@@ -19,14 +17,22 @@
             method: 'POST',
             body: JSON.stringify(signupData)
         });
+        }else{
+            toastr("비밀번호가 일치하지 않습니다.");
         }
     }
 
     function passwordCheck() {
-        if (signupData.password1 == signupData.password2) {
-            return true;
+        if (signupData.password1 !== signupData.password2) {
+            return false;
         }
-        return false;
+        return true;
+    }
+    function blankCheck(){
+        if (signupData.password1 == '' || signupData.password2 == '') {
+            return false;
+        }
+        return true;
     }
 </script>
 
@@ -70,7 +76,7 @@
                 <div class="card-body p-1">
                     <!-- // 비밀번호 확인하는 과정 추가 필요 -->
                     <label class="card-title" for="password2">비밀번호 확인
-                        {#if passwordCheck()}
+                        {#if passwordCheck() && blankCheck()}
                             <span id="check">✅</span>
                         {/if}
                     </label>

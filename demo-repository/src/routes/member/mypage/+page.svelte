@@ -1,13 +1,11 @@
 <script>
     import {onMount} from "svelte";
-    import {goto} from "$app/navigation";
-    import {checkLogout} from "../login_check.js";
 
     let userData2 = [];
     onMount(async () => {
-        let response = await fetch(`http://localhost:8090/member/mypage`,{
+        let response = await fetch(`http://localhost:8090/member/mypage`, {
             credentials: 'include'
-        }).then((res)=> res.json());
+        }).then((res) => res.json());
         userData2 = response.data;
     });
 
@@ -28,7 +26,7 @@
                 body: JSON.stringify(userData3)
             })
         } else {
-            alert("비밀번호가 일치하지 않습니다.")
+            toastNotice("비밀번호가 일치하지 않습니다.")
         }
 
     }
@@ -38,6 +36,12 @@
             return true;
         }
         return false;
+    }
+    function blankCheck(){
+        if (userData3.password1 == '' || userData3.password2 == '') {
+            return false;
+        }
+        return true;
     }
 </script>
 
@@ -50,7 +54,7 @@
     <div class="card shadow-xl">
         <div class="card-body p-1">
             <h1 class="card-title justify-center">내 정보 변경</h1>
-            <form class="p-5">
+            <form class="p-8">
                 <div class="card-body p-1">
                     <label class="card-title" for="username">사용자ID</label>
                     <input
@@ -81,8 +85,8 @@
                 <div class="card-body p-1">
                     <!-- // 비밀번호 확인하는 과정 추가 필요 -->
                     <label class="card-title" for="password2">비밀번호 확인
-                        {#if passwordCheck()}
-                            <span id="check">✅</span>
+                        {#if passwordCheck() && blankCheck()}
+                            <span id="passwordCheck">✅</span>
                         {/if}
                     </label>
                     <input
@@ -101,7 +105,7 @@
                             disabled="disabled"
                     />
                 </div>
-                <button class="btn" type="submit" on:click={postModifiedData()}>변경사항 저장</button>
+                <button class="btn" type="submit" on:click={(event)=>postModifiedData()}>변경사항 저장</button>
             </form>
         </div>
     </div>

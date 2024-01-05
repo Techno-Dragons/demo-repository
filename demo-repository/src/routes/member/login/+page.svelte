@@ -1,7 +1,9 @@
 <script>
     import {goto} from "$app/navigation";
     import {checkLogin} from "../login_check.js";
+    import {toastNotice} from "../../../app.js";
 
+    checkLogin("로그인 상태 입니다.");
     $: username = '';
     $: password = '';
     async function login() {
@@ -18,17 +20,20 @@
         })
             .then((res) => res.json())
             .then((res) => {
-                check_login(res);
-                localStorage.setItem('username', res.data.username);
-                localStorage.setItem('nickname', res.data.nickname);
+                if(check_login(res)){
+                    localStorage.setItem('username', res.data.username);
+                    localStorage.setItem('nickname', res.data.nickname);
+                }
             });
-        goto('/');
+        await goto('/');
     }
 
     function check_login(res) {
+        toastNotice(res.msg);
         if (res.data.accessToken) {
-            alert(res.msg);
+            return true;
         }
+        return false;
     }
 </script>
 
